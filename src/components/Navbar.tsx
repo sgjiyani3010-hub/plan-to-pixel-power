@@ -1,14 +1,16 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Heart, Search, Menu, X, User } from 'lucide-react';
+import { ShoppingBag, Heart, Search, Menu, X, User, LogOut } from 'lucide-react';
 import { useStore } from '@/lib/store';
+import { useAuth } from '@/contexts/AuthContext';
 
 const Navbar = () => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const cartCount = useStore((s) => s.cartCount());
+  const { user, signOut } = useAuth();
   const isHome = location.pathname === '/';
 
   useEffect(() => {
@@ -56,7 +58,15 @@ const Navbar = () => {
           <div className={`flex items-center gap-4 ${textColor}`}>
             <Search className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity" />
             <Heart className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity hidden sm:block" />
-            <User className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity hidden sm:block" />
+            {user ? (
+              <button onClick={() => signOut()} title="Sign out">
+                <LogOut className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity hidden sm:block" />
+              </button>
+            ) : (
+              <Link to="/auth">
+                <User className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity hidden sm:block" />
+              </Link>
+            )}
             <Link to="/cart" className="relative">
               <ShoppingBag className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity" />
               {cartCount > 0 && (
