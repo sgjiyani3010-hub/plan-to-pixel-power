@@ -27,6 +27,7 @@ interface StoreState {
   removeFromCart: (productId: string) => void;
   updateQuantity: (productId: string, quantity: number) => void;
   toggleWishlist: (productId: string) => void;
+  clearCart: () => void;
   cartTotal: () => number;
   cartCount: () => number;
 }
@@ -64,6 +65,7 @@ export const useStore = create<StoreState>((set, get) => ({
         ? state.wishlist.filter((id) => id !== productId)
         : [...state.wishlist, productId],
     })),
+  clearCart: () => set({ cart: [] }),
   cartTotal: () => get().cart.reduce((sum, item) => sum + item.product.price * item.quantity, 0),
   cartCount: () => get().cart.reduce((sum, item) => sum + item.quantity, 0),
 }));
