@@ -125,9 +125,9 @@ const CartPage = () => {
                     </button>
                   </div>
 
-                  <button className="w-full bg-accent hover:bg-accent/90 text-accent-foreground py-3.5 rounded-xl font-accent font-semibold text-sm transition-all hover:shadow-lg hover:shadow-accent/20">
+                  <Link to="/checkout" className="block w-full bg-accent hover:bg-accent/90 text-accent-foreground py-3.5 rounded-xl font-accent font-semibold text-sm transition-all hover:shadow-lg hover:shadow-accent/20 text-center">
                     Proceed to Checkout
-                  </button>
+                  </Link>
                 </div>
               </div>
             </div>
