@@ -1,0 +1,105 @@
+import product1 from '@/assets/product-1.jpg';
+import product2 from '@/assets/product-2.jpg';
+import product3 from '@/assets/product-3.jpg';
+import product4 from '@/assets/product-4.jpg';
+import product5 from '@/assets/product-5.jpg';
+import product6 from '@/assets/product-6.jpg';
+import product7 from '@/assets/product-7.jpg';
+import product8 from '@/assets/product-8.jpg';
+import type { Product } from './store';
+
+export const products: Product[] = [
+  {
+    id: '1',
+    name: 'Classic White Essential',
+    price: 499,
+    originalPrice: 799,
+    image: product1,
+    category: 'plain',
+    badge: 'bestseller',
+    colors: ['#FFFFFF', '#000000', '#1A1A2E', '#808080'],
+    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+    description: 'Premium 100% combed cotton round neck t-shirt. Ultra-soft, breathable, and perfect for everyday wear.',
+  },
+  {
+    id: '2',
+    name: 'Urban Geometry Graphic',
+    price: 699,
+    originalPrice: 999,
+    image: product2,
+    category: 'graphic',
+    badge: 'trending',
+    colors: ['#000000', '#1A1A2E'],
+    sizes: ['S', 'M', 'L', 'XL'],
+    description: 'Bold geometric abstract print on premium cotton. Stand out with this urban street-style masterpiece.',
+  },
+  {
+    id: '3',
+    name: 'Crimson Polo Classic',
+    price: 899,
+    originalPrice: 1299,
+    image: product3,
+    category: 'polo',
+    badge: 'new',
+    colors: ['#E94560', '#0F3460', '#1A1A2E', '#FFFFFF'],
+    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+    description: 'Premium cotton polo with ribbed collar. Perfect for a smart-casual look.',
+  },
+  {
+    id: '4',
+    name: 'Midnight Navy Crew',
+    price: 499,
+    originalPrice: 699,
+    image: product4,
+    category: 'plain',
+    colors: ['#0F3460', '#000000', '#808080'],
+    sizes: ['S', 'M', 'L', 'XL', 'XXL', '3XL'],
+    description: 'Deep navy blue crew neck in 180 GSM bio-washed cotton. Rich color that lasts.',
+  },
+  {
+    id: '5',
+    name: 'Sunset Typography Tee',
+    price: 749,
+    originalPrice: 999,
+    image: product5,
+    category: 'graphic',
+    badge: 'trending',
+    colors: ['#F5A623', '#E94560'],
+    sizes: ['S', 'M', 'L', 'XL'],
+    description: 'Vibrant yellow with bold typography print. Turn heads with this statement piece.',
+  },
+  {
+    id: '6',
+    name: 'Olive Comfort Fit',
+    price: 549,
+    image: product6,
+    category: 'plain',
+    colors: ['#6B8E23', '#000000', '#808080', '#1A1A2E'],
+    sizes: ['M', 'L', 'XL', 'XXL', '3XL'],
+    description: 'Earthy olive green in a relaxed comfort fit. Premium ring-spun cotton.',
+  },
+  {
+    id: '7',
+    name: 'Vintage Rider Graphic',
+    price: 799,
+    originalPrice: 1199,
+    image: product7,
+    category: 'graphic',
+    badge: 'bestseller',
+    colors: ['#722F37', '#000000'],
+    sizes: ['S', 'M', 'L', 'XL'],
+    description: 'Retro motorcycle vintage print on rich maroon. For the free-spirited rider.',
+  },
+  {
+    id: '8',
+    name: 'Azure Polo Sport',
+    price: 949,
+    originalPrice: 1399,
+    image: product8,
+    category: 'polo',
+    badge: 'new',
+    colors: ['#00BFFF', '#FFFFFF', '#0F3460'],
+    sizes: ['S', 'M', 'L', 'XL', 'XXL'],
+    description: 'Bright sky blue polo with moisture-wicking fabric. Sport meets style.',
+  },
+];
