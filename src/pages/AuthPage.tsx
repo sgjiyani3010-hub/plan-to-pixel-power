@@ -25,12 +25,19 @@ const AuthPage = () => {
     setLoading(true);
 
     if (isLogin) {
-      const { error } = await signIn(email, password);
+      const { error, data } = await signIn(email, password);
       if (error) {
         toast({ title: 'Login failed', description: error.message, variant: 'destructive' });
       } else {
         toast({ title: 'Welcome back!' });
-        navigate('/');
+        // Check if user is admin and redirect accordingly
+        const userId = data?.user?.id;
+        if (userId) {
+          const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: userId, _role: 'admin' });
+          navigate(isAdmin ? '/admin' : '/');
+        } else {
+          navigate('/');
+        }
       }
     } else {
       const { error } = await signUp(email, password, fullName);
