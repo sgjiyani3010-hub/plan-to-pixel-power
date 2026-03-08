@@ -25,6 +25,11 @@ import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
 import DesignerPage from "./pages/DesignerPage";
 import WishlistPage from "./pages/WishlistPage";
+import TrackOrderPage from "./pages/TrackOrderPage";
+import ReturnPolicyPage from "./pages/ReturnPolicyPage";
+import ShippingPolicyPage from "./pages/ShippingPolicyPage";
+import FAQPage from "./pages/FAQPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +53,11 @@ const App = () => (
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/designer" element={<DesignerPage />} />
             <Route path="/wishlist" element={<WishlistPage />} />
+            <Route path="/track-order" element={<TrackOrderPage />} />
+            <Route path="/return-policy" element={<ReturnPolicyPage />} />
+            <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/orders" element={<AdminOrders />} />

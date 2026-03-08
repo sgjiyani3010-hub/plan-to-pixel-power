@@ -46,6 +46,14 @@ interface ImageLayer {
   height: number;
 }
 
+const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+const PRINT_POSITIONS = [
+  { id: 'front-center', label: 'Front Center', desc: 'Standard chest print' },
+  { id: 'front-left', label: 'Front Left', desc: 'Left chest pocket area' },
+  { id: 'back-center', label: 'Back Center', desc: 'Full back print' },
+  { id: 'back-top', label: 'Back Top', desc: 'Upper back below neck' },
+];
+
 const DesignerPage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,6 +69,8 @@ const DesignerPage = () => {
   const [italic, setItalic] = useState(false);
   const [textAlign, setTextAlign] = useState<'left' | 'center' | 'right'>('center');
   const [dragging, setDragging] = useState<{ id: string; type: 'text' | 'image'; offsetX: number; offsetY: number } | null>(null);
+  const [selectedSize, setSelectedSize] = useState('M');
+  const [printPosition, setPrintPosition] = useState('front-center');
 
   const { addToCart } = useStore();
 
@@ -262,22 +272,23 @@ const DesignerPage = () => {
   };
 
   const handleAddToCart = () => {
+    const positionLabel = PRINT_POSITIONS.find(p => p.id === printPosition)?.label || 'Front Center';
     addToCart({
       product: {
         id: `custom-${Date.now()}`,
-        name: 'Custom Designed T-Shirt',
+        name: `Custom T-Shirt (${positionLabel})`,
         price: 799,
         image: canvasRef.current?.toDataURL() || '/assets/product-1.jpg',
         category: 'custom',
         colors: [tshirtColor],
-        sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-        description: 'Your custom designed t-shirt',
+        sizes: SIZES,
+        description: `Custom designed t-shirt with ${positionLabel.toLowerCase()} print`,
       },
       quantity: 1,
-      size: 'M',
+      size: selectedSize,
       color: tshirtColor,
     });
-    toast.success('Custom t-shirt added to cart!');
+    toast.success(`Custom t-shirt (Size ${selectedSize}) added to cart!`);
   };
 
   return (
@@ -416,6 +427,47 @@ const DesignerPage = () => {
                   onMouseUp={handleCanvasMouseUp}
                   onMouseLeave={handleCanvasMouseUp}
                 />
+              </div>
+
+              {/* Print Position Selector */}
+              <div className="w-full bg-card rounded-xl border border-border p-4">
+                <h4 className="font-accent text-xs font-semibold text-foreground mb-3">Print Position</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  {PRINT_POSITIONS.map((pos) => (
+                    <button
+                      key={pos.id}
+                      onClick={() => setPrintPosition(pos.id)}
+                      className={`p-3 rounded-lg border-2 text-left transition-all ${
+                        printPosition === pos.id 
+                          ? 'border-accent bg-accent/10' 
+                          : 'border-border hover:border-muted-foreground/30'
+                      }`}
+                    >
+                      <span className="font-accent text-xs font-medium text-foreground block">{pos.label}</span>
+                      <span className="font-body text-[10px] text-muted-foreground">{pos.desc}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Size Selector */}
+              <div className="w-full bg-card rounded-xl border border-border p-4">
+                <h4 className="font-accent text-xs font-semibold text-foreground mb-3">Select Size</h4>
+                <div className="flex gap-2">
+                  {SIZES.map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`flex-1 py-2.5 rounded-lg border-2 font-accent text-sm font-medium transition-all ${
+                        selectedSize === size 
+                          ? 'border-accent bg-accent text-accent-foreground' 
+                          : 'border-border text-foreground hover:border-muted-foreground/30'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
               </div>
 
               <div className="flex gap-3 w-full">
