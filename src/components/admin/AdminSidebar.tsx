@@ -1,5 +1,7 @@
-import { LayoutDashboard, Package, ShoppingCart, ArrowLeft, BarChart3, Users, Tag, Mail, Settings } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, ArrowLeft, BarChart3, Users, Tag, Mail, Settings, LogOut } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import {
   Sidebar,
