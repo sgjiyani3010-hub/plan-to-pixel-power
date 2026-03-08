@@ -16,7 +16,8 @@ interface RecentOrder {
   total: number;
   status: string;
   created_at: string;
-  profiles: { full_name: string | null } | null;
+  user_id: string;
+  customerName?: string;
 }
 
 const AdminDashboard = () => {
@@ -42,12 +43,27 @@ const AdminDashboard = () => {
     };
 
     const fetchRecent = async () => {
-      const { data } = await supabase
+      const { data: orders } = await supabase
         .from('orders')
-        .select('id, total, status, created_at, profiles!orders_user_id_fkey(full_name)')
+        .select('id, total, status, created_at, user_id')
         .order('created_at', { ascending: false })
         .limit(5);
-      setRecentOrders((data as unknown as RecentOrder[]) || []);
+
+      if (!orders || orders.length === 0) { setRecentOrders([]); return; }
+
+      // Fetch profiles separately to avoid FK issues
+      const userIds = [...new Set(orders.map((o) => o.user_id))];
+      const { data: profiles } = await supabase
+        .from('profiles')
+        .select('user_id, full_name')
+        .in('user_id', userIds);
+
+      const profileMap = new Map((profiles || []).map((p) => [p.user_id, p.full_name]));
+
+      setRecentOrders(orders.map((o) => ({
+        ...o,
+        customerName: profileMap.get(o.user_id) || 'Unknown',
+      })));
     };
 
     fetchStats();
@@ -111,7 +127,7 @@ const AdminDashboard = () => {
                     {recentOrders.map((o) => (
                       <tr key={o.id} className="border-b border-border/50">
                         <td className="py-3 pr-4 font-mono text-xs">{o.id.slice(0, 8)}...</td>
-                        <td className="py-3 pr-4">{o.profiles?.full_name || 'Unknown'}</td>
+                        <td className="py-3 pr-4">{o.customerName}</td>
                         <td className="py-3 pr-4 font-semibold">₹{Number(o.total).toLocaleString()}</td>
                         <td className="py-3 pr-4">
                           <span className={`px-2 py-1 rounded-full text-xs font-medium capitalize ${statusColor[o.status] || ''}`}>

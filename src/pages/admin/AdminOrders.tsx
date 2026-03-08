@@ -3,10 +3,11 @@ import { supabase } from '@/integrations/supabase/client';
 import { AdminLayout } from '@/components/admin/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
-import { Eye } from 'lucide-react';
+import { Eye, Search } from 'lucide-react';
 
 interface Order {
   id: string;
@@ -17,7 +18,7 @@ interface Order {
   discount: number | null;
   shipping_address: Record<string, string> | null;
   created_at: string;
-  profiles: { full_name: string | null } | null;
+  customerName?: string;
 }
 
 interface OrderItem {
@@ -45,14 +46,23 @@ const AdminOrders = () => {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
   const [detailOpen, setDetailOpen] = useState(false);
+  const [search, setSearch] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
   const { toast } = useToast();
 
   const fetchOrders = async () => {
-    const { data } = await supabase
+    const { data: ordersData } = await supabase
       .from('orders')
-      .select('*, profiles!orders_user_id_fkey(full_name)')
+      .select('*')
       .order('created_at', { ascending: false });
-    setOrders((data as unknown as Order[]) || []);
+
+    if (!ordersData) { setOrders([]); return; }
+
+    const userIds = [...new Set(ordersData.map((o) => o.user_id))];
+    const { data: profiles } = await supabase.from('profiles').select('user_id, full_name').in('user_id', userIds);
+    const profileMap = new Map((profiles || []).map((p) => [p.user_id, p.full_name]));
+
+    setOrders(ordersData.map((o) => ({ ...o, customerName: profileMap.get(o.user_id) || 'Unknown' })) as Order[]);
   };
 
   useEffect(() => { fetchOrders(); }, []);
@@ -73,18 +83,38 @@ const AdminOrders = () => {
     setDetailOpen(true);
   };
 
+  const filtered = orders.filter((o) => {
+    const q = search.toLowerCase();
+    const matchSearch = !q || o.id.includes(q) || (o.customerName || '').toLowerCase().includes(q);
+    const matchStatus = statusFilter === 'all' || o.status === statusFilter;
+    return matchSearch && matchStatus;
+  });
+
   return (
     <AdminLayout>
       <div className="space-y-6">
-        <h1 className="font-heading text-2xl font-bold text-foreground">Orders</h1>
+        <div className="flex items-center justify-between flex-wrap gap-4">
+          <h1 className="font-heading text-2xl font-bold text-foreground">Orders</h1>
+          <div className="flex items-center gap-3">
+            <div className="relative">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+              <Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 w-48" />
+            </div>
+            <Select value={statusFilter} onValueChange={setStatusFilter}>
+              <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">All</SelectItem>
+                {statuses.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
 
         <Card>
-          <CardHeader>
-            <CardTitle className="font-heading text-lg">{orders.length} Orders</CardTitle>
-          </CardHeader>
+          <CardHeader><CardTitle className="font-heading text-lg">{filtered.length} Orders</CardTitle></CardHeader>
           <CardContent>
-            {orders.length === 0 ? (
-              <p className="text-muted-foreground font-accent text-sm">No orders yet.</p>
+            {filtered.length === 0 ? (
+              <p className="text-muted-foreground font-accent text-sm">No orders found.</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-sm font-accent">
@@ -99,20 +129,16 @@ const AdminOrders = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {orders.map((o) => (
+                    {filtered.map((o) => (
                       <tr key={o.id} className="border-b border-border/50">
                         <td className="py-3 pr-4 font-mono text-xs">{o.id.slice(0, 8)}...</td>
-                        <td className="py-3 pr-4">{o.profiles?.full_name || 'Unknown'}</td>
+                        <td className="py-3 pr-4">{o.customerName}</td>
                         <td className="py-3 pr-4 font-semibold">₹{Number(o.total).toLocaleString()}</td>
                         <td className="py-3 pr-4">
                           <Select value={o.status} onValueChange={(v) => updateStatus(o.id, v)}>
-                            <SelectTrigger className="w-32 h-8">
-                              <SelectValue />
-                            </SelectTrigger>
+                            <SelectTrigger className="w-32 h-8"><SelectValue /></SelectTrigger>
                             <SelectContent>
-                              {statuses.map((s) => (
-                                <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>
-                              ))}
+                              {statuses.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}
                             </SelectContent>
                           </Select>
                         </td>
@@ -133,9 +159,7 @@ const AdminOrders = () => {
 
         <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
           <DialogContent className="max-w-lg">
-            <DialogHeader>
-              <DialogTitle className="font-heading">Order Details</DialogTitle>
-            </DialogHeader>
+            <DialogHeader><DialogTitle className="font-heading">Order Details</DialogTitle></DialogHeader>
             {selectedOrder && (
               <div className="space-y-4 font-accent text-sm">
                 <div className="grid grid-cols-2 gap-2">
@@ -146,19 +170,15 @@ const AdminOrders = () => {
                   {selectedOrder.coupon_code && <div><span className="text-muted-foreground">Coupon:</span> {selectedOrder.coupon_code}</div>}
                   {selectedOrder.discount && <div><span className="text-muted-foreground">Discount:</span> ₹{Number(selectedOrder.discount).toLocaleString()}</div>}
                 </div>
-
                 {selectedOrder.shipping_address && (
                   <div>
                     <p className="text-muted-foreground mb-1">Shipping Address:</p>
                     <p>{Object.values(selectedOrder.shipping_address).filter(Boolean).join(', ')}</p>
                   </div>
                 )}
-
                 <div>
                   <p className="text-muted-foreground mb-2">Items:</p>
-                  {orderItems.length === 0 ? (
-                    <p>No items found.</p>
-                  ) : (
+                  {orderItems.length === 0 ? <p>No items found.</p> : (
                     <div className="space-y-2">
                       {orderItems.map((item) => (
                         <div key={item.id} className="flex justify-between items-center p-2 rounded bg-muted/50">
