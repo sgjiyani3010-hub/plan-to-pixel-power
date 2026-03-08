@@ -105,7 +105,8 @@ const STEPS = [
 
 function getActiveStep(orderStatus: string, shipment: Shipment | null): number {
   if (!shipment) {
-    if (orderStatus === 'confirmed' || orderStatus === 'pending') return 0;
+    if (orderStatus === 'pending') return 0;
+    if (orderStatus === 'confirmed') return 1;
     if (orderStatus === 'processing') return 1;
   }
   if (shipment) {
