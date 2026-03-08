@@ -125,6 +125,38 @@ export type Database = {
         }
         Relationships: []
       }
+      product_variations: {
+        Row: {
+          color: string
+          created_at: string
+          id: string
+          image: string
+          product_id: string
+        }
+        Insert: {
+          color: string
+          created_at?: string
+          id?: string
+          image: string
+          product_id: string
+        }
+        Update: {
+          color?: string
+          created_at?: string
+          id?: string
+          image?: string
+          product_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_variations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           badge: string | null
