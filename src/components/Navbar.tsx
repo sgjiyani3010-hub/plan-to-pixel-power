@@ -12,6 +12,7 @@ const Navbar = () => {
   const location = useLocation();
   const cartCount = useStore((s) => s.cartCount());
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const isHome = location.pathname === '/';
 
   useEffect(() => {
