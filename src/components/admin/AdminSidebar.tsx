@@ -1,4 +1,4 @@
-import { LayoutDashboard, Package, ShoppingCart, ArrowLeft } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, ArrowLeft, BarChart3, Users, Tag, Mail, Settings } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
 import { useLocation } from 'react-router-dom';
 import {
@@ -17,6 +17,11 @@ const items = [
   { title: 'Dashboard', url: '/admin', icon: LayoutDashboard },
   { title: 'Products', url: '/admin/products', icon: Package },
   { title: 'Orders', url: '/admin/orders', icon: ShoppingCart },
+  { title: 'Reports', url: '/admin/reports', icon: BarChart3 },
+  { title: 'Customers', url: '/admin/customers', icon: Users },
+  { title: 'Coupons', url: '/admin/coupons', icon: Tag },
+  { title: 'Messages', url: '/admin/messages', icon: Mail },
+  { title: 'Settings', url: '/admin/settings', icon: Settings },
 ];
 
 export function AdminSidebar() {

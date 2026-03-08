@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useAuth } from '@/contexts/AuthContext';
 import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 import Navbar from '@/components/Navbar';
 import Footer from '@/components/Footer';
 import { Button } from '@/components/ui/button';
@@ -29,7 +30,14 @@ const AuthPage = () => {
         toast({ title: 'Login failed', description: error.message, variant: 'destructive' });
       } else {
         toast({ title: 'Welcome back!' });
-        navigate('/');
+        // Check if user is admin and redirect accordingly
+        const { data: { user: currentUser } } = await supabase.auth.getUser();
+        if (currentUser) {
+          const { data: isAdmin } = await supabase.rpc('has_role', { _user_id: currentUser.id, _role: 'admin' });
+          navigate(isAdmin ? '/admin' : '/');
+        } else {
+          navigate('/');
+        }
       }
     } else {
       const { error } = await signUp(email, password, fullName);
