@@ -45,11 +45,11 @@ const ProductDetail = () => {
         // Fetch color variations
         const { data: vars } = await supabase
           .from('product_variations')
-          .select('color, image')
+          .select('color, image, name')
           .eq('product_id', data.id);
         if (vars) {
-          const varMap: Record<string, string> = {};
-          vars.forEach((v: any) => { varMap[v.color] = v.image; });
+          const varMap: Record<string, { image: string; name?: string }> = {};
+          vars.forEach((v: any) => { varMap[v.color] = { image: v.image, name: v.name }; });
           setVariations(varMap);
         }
         setQuantity(1);
