@@ -42,6 +42,18 @@ const ProductDetail = () => {
         setSelectedSize('');
         setQuantity(1);
 
+        // Fetch color variations
+        const { data: vars } = await supabase
+          .from('product_variations')
+          .select('color, image')
+          .eq('product_id', data.id);
+        if (vars) {
+          const varMap: Record<string, string> = {};
+          vars.forEach((v: any) => { varMap[v.color] = v.image; });
+          setVariations(varMap);
+        }
+        setQuantity(1);
+
         // Fetch related
         const { data: rel } = await supabase
           .from('products')
