@@ -1,5 +1,7 @@
-import { LayoutDashboard, Package, ShoppingCart, ArrowLeft, BarChart3, Users, Tag, Mail, Settings } from 'lucide-react';
+import { LayoutDashboard, Package, ShoppingCart, ArrowLeft, BarChart3, Users, Tag, Mail, Settings, LogOut } from 'lucide-react';
 import { NavLink } from '@/components/NavLink';
+import { useAuth } from '@/contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import {
   Sidebar,
@@ -28,6 +30,8 @@ export function AdminSidebar() {
   const { state } = useSidebar();
   const collapsed = state === 'collapsed';
   const location = useLocation();
+  const { signOut } = useAuth();
+  const navigate = useNavigate();
   const isActive = (path: string) =>
     path === '/admin' ? location.pathname === '/admin' : location.pathname.startsWith(path);
 
@@ -62,6 +66,16 @@ export function AdminSidebar() {
                     <ArrowLeft className="mr-2 h-4 w-4" />
                     {!collapsed && <span>Back to Store</span>}
                   </NavLink>
+                </SidebarMenuButton>
+                </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={async () => { await signOut(); navigate('/auth'); }}
+                  className="hover:bg-destructive/10 text-destructive cursor-pointer"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  {!collapsed && <span>Logout</span>}
                 </SidebarMenuButton>
               </SidebarMenuItem>
             </SidebarMenu>
