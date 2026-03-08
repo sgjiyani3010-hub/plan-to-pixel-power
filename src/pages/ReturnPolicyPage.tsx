@@ -86,7 +86,7 @@ const ReturnPolicyPage = () => {
               <div className="grid md:grid-cols-4 gap-6">
                 {[
                   { step: 1, title: 'Initiate Request', desc: 'Contact us via email or WhatsApp with your order ID' },
-                  { step: 2, title: 'Get Approval', desc: 'We'll review and approve your request within 24 hours' },
+                  { step: 2, title: 'Get Approval', desc: 'We will review and approve your request within 24 hours' },
                   { step: 3, title: 'Ship It Back', desc: 'Pack the item securely and ship via our pickup or self-ship' },
                   { step: 4, title: 'Refund/Exchange', desc: 'Get refund in 5-7 days or exchange shipped immediately' },
                 ].map((item) => (
