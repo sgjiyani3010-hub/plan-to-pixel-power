@@ -2,3 +2,12 @@ project_id = "fxsfpidtaztftabubzyi"
 
 [functions.razorpay]
 verify_jwt = false
+
+[functions.shiprocket]
+verify_jwt = false
+
+[functions.whatsapp]
+verify_jwt = false
+
+[functions.shiprocket-webhook]
+verify_jwt = false
