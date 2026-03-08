@@ -25,7 +25,7 @@ const Navbar = () => {
   const links = [
     { to: '/', label: 'Home' },
     { to: '/shop', label: 'Shop' },
-    { to: '/shop?category=custom', label: 'Customize' },
+    { to: '/designer', label: 'Customize' },
     { to: '/about', label: 'About' },
     { to: '/contact', label: 'Contact' },
   ];
