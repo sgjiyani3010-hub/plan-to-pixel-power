@@ -7,7 +7,10 @@ import { Input } from '@/components/ui/input';
 import { useToast } from '@/hooks/use-toast';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Eye, Search } from 'lucide-react';
+import { OrderFulfillment } from '@/components/admin/OrderFulfillment';
+import { cn } from '@/lib/utils';
 
 interface Order {
   id: string;
@@ -31,14 +34,19 @@ interface OrderItem {
   products: { name: string } | null;
 }
 
-const statuses = ['pending', 'confirmed', 'shipped', 'delivered', 'cancelled'];
+const statuses = ['pending', 'confirmed', 'processing', 'ready_to_ship', 'shipped', 'in_transit', 'out_for_delivery', 'delivered', 'cancelled', 'returned'];
 
 const statusColor: Record<string, string> = {
-  pending: 'bg-highlight/20 text-highlight',
-  confirmed: 'bg-secondary/20 text-secondary',
-  shipped: 'bg-primary/20 text-primary',
-  delivered: 'bg-green-100 text-green-700',
-  cancelled: 'bg-destructive/20 text-destructive',
+  pending: 'bg-yellow-100 text-yellow-800',
+  confirmed: 'bg-blue-100 text-blue-800',
+  processing: 'bg-purple-100 text-purple-800',
+  ready_to_ship: 'bg-orange-100 text-orange-800',
+  shipped: 'bg-indigo-100 text-indigo-800',
+  in_transit: 'bg-cyan-100 text-cyan-800',
+  out_for_delivery: 'bg-teal-100 text-teal-800',
+  delivered: 'bg-green-100 text-green-800',
+  cancelled: 'bg-red-100 text-red-800',
+  returned: 'bg-gray-100 text-gray-800',
 };
 
 const AdminOrders = () => {
@@ -66,12 +74,6 @@ const AdminOrders = () => {
   };
 
   useEffect(() => { fetchOrders(); }, []);
-
-  const updateStatus = async (orderId: string, status: string) => {
-    const { error } = await supabase.from('orders').update({ status }).eq('id', orderId);
-    if (error) toast({ title: 'Error', description: error.message, variant: 'destructive' });
-    else { toast({ title: `Order marked as ${status}` }); fetchOrders(); }
-  };
 
   const viewDetails = async (order: Order) => {
     setSelectedOrder(order);
@@ -101,10 +103,14 @@ const AdminOrders = () => {
               <Input placeholder="Search..." value={search} onChange={(e) => setSearch(e.target.value)} className="pl-9 w-48" />
             </div>
             <Select value={statusFilter} onValueChange={setStatusFilter}>
-              <SelectTrigger className="w-32"><SelectValue /></SelectTrigger>
+              <SelectTrigger className="w-36"><SelectValue /></SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">All</SelectItem>
-                {statuses.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}
+                {statuses.map((s) => (
+                  <SelectItem key={s} value={s} className="capitalize">
+                    {s.replace(/_/g, ' ')}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
@@ -135,17 +141,14 @@ const AdminOrders = () => {
                         <td className="py-3 pr-4">{o.customerName}</td>
                         <td className="py-3 pr-4 font-semibold">₹{Number(o.total).toLocaleString()}</td>
                         <td className="py-3 pr-4">
-                          <Select value={o.status} onValueChange={(v) => updateStatus(o.id, v)}>
-                            <SelectTrigger className="w-32 h-8"><SelectValue /></SelectTrigger>
-                            <SelectContent>
-                              {statuses.map((s) => <SelectItem key={s} value={s} className="capitalize">{s}</SelectItem>)}
-                            </SelectContent>
-                          </Select>
+                          <Badge className={cn('capitalize text-xs', statusColor[o.status])}>
+                            {o.status.replace(/_/g, ' ')}
+                          </Badge>
                         </td>
                         <td className="py-3 pr-4 text-muted-foreground">{new Date(o.created_at).toLocaleDateString()}</td>
                         <td className="py-3">
                           <Button size="sm" variant="outline" onClick={() => viewDetails(o)}>
-                            <Eye className="w-3 h-3 mr-1" /> View
+                            <Eye className="w-3 h-3 mr-1" /> Fulfill
                           </Button>
                         </td>
                       </tr>
@@ -158,41 +161,34 @@ const AdminOrders = () => {
         </Card>
 
         <Dialog open={detailOpen} onOpenChange={setDetailOpen}>
-          <DialogContent className="max-w-lg">
-            <DialogHeader><DialogTitle className="font-heading">Order Details</DialogTitle></DialogHeader>
+          <DialogContent className="max-w-2xl max-h-[85vh] overflow-y-auto">
+            <DialogHeader>
+              <DialogTitle className="font-heading">
+                Order Fulfillment — {selectedOrder?.id.slice(0, 8)}...
+              </DialogTitle>
+            </DialogHeader>
             {selectedOrder && (
-              <div className="space-y-4 font-accent text-sm">
-                <div className="grid grid-cols-2 gap-2">
-                  <div><span className="text-muted-foreground">Order ID:</span> <span className="font-mono text-xs">{selectedOrder.id.slice(0, 12)}...</span></div>
-                  <div><span className="text-muted-foreground">Status:</span> <span className={`px-2 py-0.5 rounded-full text-xs font-medium capitalize ${statusColor[selectedOrder.status]}`}>{selectedOrder.status}</span></div>
-                  <div><span className="text-muted-foreground">Total:</span> <span className="font-semibold">₹{Number(selectedOrder.total).toLocaleString()}</span></div>
-                  <div><span className="text-muted-foreground">Date:</span> {new Date(selectedOrder.created_at).toLocaleString()}</div>
-                  {selectedOrder.coupon_code && <div><span className="text-muted-foreground">Coupon:</span> {selectedOrder.coupon_code}</div>}
-                  {selectedOrder.discount && <div><span className="text-muted-foreground">Discount:</span> ₹{Number(selectedOrder.discount).toLocaleString()}</div>}
-                </div>
-                {selectedOrder.shipping_address && (
-                  <div>
-                    <p className="text-muted-foreground mb-1">Shipping Address:</p>
-                    <p>{Object.values(selectedOrder.shipping_address).filter(Boolean).join(', ')}</p>
-                  </div>
-                )}
-                <div>
-                  <p className="text-muted-foreground mb-2">Items:</p>
-                  {orderItems.length === 0 ? <p>No items found.</p> : (
-                    <div className="space-y-2">
-                      {orderItems.map((item) => (
-                        <div key={item.id} className="flex justify-between items-center p-2 rounded bg-muted/50">
-                          <div>
-                            <p className="font-medium">{item.products?.name || 'Unknown'}</p>
-                            <p className="text-xs text-muted-foreground">Size: {item.size} · Color: {item.color} · Qty: {item.quantity}</p>
-                          </div>
-                          <span className="font-semibold">₹{Number(item.price).toLocaleString()}</span>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
+              <OrderFulfillment
+                order={selectedOrder}
+                items={orderItems}
+                onStatusChange={() => {
+                  fetchOrders();
+                  // Re-fetch the selected order to update its status in the dialog
+                  if (selectedOrder) {
+                    supabase
+                      .from('orders')
+                      .select('*')
+                      .eq('id', selectedOrder.id)
+                      .single()
+                      .then(({ data }) => {
+                        if (data) {
+                          const updated = { ...data, customerName: selectedOrder.customerName } as Order;
+                          setSelectedOrder(updated);
+                        }
+                      });
+                  }
+                }}
+              />
             )}
           </DialogContent>
         </Dialog>
