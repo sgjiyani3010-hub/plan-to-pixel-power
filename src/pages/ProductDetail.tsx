@@ -17,7 +17,7 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [variations, setVariations] = useState<Record<string, string>>({});
+  const [variations, setVariations] = useState<Record<string, { image: string; name?: string }>>({});
   const { addToCart, toggleWishlist, wishlist } = useStore();
 
   useEffect(() => {
