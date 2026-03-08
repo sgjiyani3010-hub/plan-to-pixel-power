@@ -59,9 +59,9 @@ const Navbar = () => {
             <Search className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity" />
             <Heart className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity hidden sm:block" />
             {user ? (
-              <button onClick={() => signOut()} title="Sign out">
-                <LogOut className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity hidden sm:block" />
-              </button>
+              <Link to="/profile" title="My Account">
+                <User className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity hidden sm:block" />
+              </Link>
             ) : (
               <Link to="/auth">
                 <User className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity hidden sm:block" />
