@@ -57,7 +57,9 @@ const Navbar = () => {
 
           <div className={`flex items-center gap-4 ${textColor}`}>
             <Search className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity" />
-            <Heart className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity hidden sm:block" />
+            <Link to="/wishlist">
+              <Heart className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity hidden sm:block" />
+            </Link>
             {user ? (
               <Link to="/profile" title="My Account">
                 <User className="w-5 h-5 cursor-pointer hover:opacity-70 transition-opacity hidden sm:block" />
