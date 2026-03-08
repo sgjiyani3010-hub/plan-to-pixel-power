@@ -45,17 +45,36 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
     const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
-    // Get all active (non-terminal) shipments with AWB codes
-    const terminalStatuses = ["delivered", "cancelled", "rto"];
-    const { data: shipments, error } = await supabase
-      .from("order_shipments")
-      .select("*, orders(id, user_id)")
-      .not("awb_code", "is", null)
-      .not("status", "in", `(${terminalStatuses.join(",")})`);
+    // Check if a specific shipment_id was provided
+    let body: Record<string, unknown> = {};
+    try { body = await req.json(); } catch { /* no body is fine */ }
+    const singleShipmentId = body.shipment_id as string | undefined;
 
-    if (error) throw error;
-    if (!shipments || shipments.length === 0) {
-      return new Response(JSON.stringify({ ok: true, message: "No active shipments to poll" }), {
+    let shipments: any[];
+
+    if (singleShipmentId) {
+      // Poll a single shipment by ID
+      const { data, error } = await supabase
+        .from("order_shipments")
+        .select("*, orders(id, user_id)")
+        .eq("id", singleShipmentId)
+        .not("awb_code", "is", null);
+      if (error) throw error;
+      shipments = data || [];
+    } else {
+      // Get all active (non-terminal) shipments with AWB codes
+      const terminalStatuses = ["delivered", "cancelled", "rto"];
+      const { data, error } = await supabase
+        .from("order_shipments")
+        .select("*, orders(id, user_id)")
+        .not("awb_code", "is", null)
+        .not("status", "in", `(${terminalStatuses.join(",")})`);
+      if (error) throw error;
+      shipments = data || [];
+    }
+
+    if (shipments.length === 0) {
+      return new Response(JSON.stringify({ ok: true, message: "No shipments to poll", updated: 0 }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }

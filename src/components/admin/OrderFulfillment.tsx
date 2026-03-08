@@ -528,9 +528,9 @@ export function OrderFulfillment({ order, items, onStatusChange }: Props) {
             <div className="space-y-4">
               <div className="flex items-center justify-between">
                 <h3 className="font-medium text-sm">Shipment Tracking</h3>
-                <Button size="sm" variant="outline" onClick={handleTrack} disabled={loading === 'track'}>
-                  {loading === 'track' ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <RefreshCw className="w-3 h-3 mr-1" />}
-                  Refresh
+                <Button size="sm" variant="outline" onClick={handleRefreshTracking} disabled={loading === 'refresh-tracking' || loading === 'track'}>
+                  {(loading === 'refresh-tracking' || loading === 'track') ? <Loader2 className="w-3 h-3 animate-spin mr-1" /> : <RefreshCw className="w-3 h-3 mr-1" />}
+                  Refresh Tracking
                 </Button>
               </div>
 
