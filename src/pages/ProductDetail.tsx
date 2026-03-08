@@ -125,7 +125,15 @@ const ProductDetail = () => {
 
           <div className="grid md:grid-cols-2 gap-8 lg:gap-16">
             <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} className="relative aspect-[3/4] rounded-2xl overflow-hidden bg-muted">
-              <img src={product.image} alt={product.name} className="w-full h-full object-cover" />
+              <motion.img
+                key={selectedColor}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.3 }}
+                src={variations[selectedColor] || product.image}
+                alt={product.name}
+                className="w-full h-full object-cover"
+              />
               {product.badge && (
                 <span className="absolute top-4 left-4 bg-accent text-accent-foreground px-4 py-1.5 rounded-full font-accent text-xs font-bold uppercase">{product.badge}</span>
               )}
