@@ -86,6 +86,13 @@ const Navbar = () => {
                 </motion.div>
               </Link>
             )}
+            {isAdmin && (
+              <Link to="/admin" title="Admin Panel">
+                <motion.div whileHover="hover" whileTap="tap" variants={iconVariants} className="hidden sm:block">
+                  <Shield className="w-5 h-5 cursor-pointer text-accent" />
+                </motion.div>
+              </Link>
+            )}
             <Link to="/cart" className="relative">
               <motion.div whileHover="hover" whileTap="tap" variants={iconVariants}>
                 <ShoppingBag className="w-5 h-5 cursor-pointer" />
