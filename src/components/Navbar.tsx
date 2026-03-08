@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Heart, Search, Menu, X, User, LogOut } from 'lucide-react';
+import { ShoppingBag, Heart, Search, Menu, X, User, LogOut, Shield } from 'lucide-react';
+import { useAdmin } from '@/hooks/useAdmin';
 import { useStore } from '@/lib/store';
 import { useAuth } from '@/contexts/AuthContext';
 
