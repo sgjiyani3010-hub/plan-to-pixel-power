@@ -25,6 +25,11 @@ import ProfilePage from "./pages/ProfilePage";
 import NotFound from "./pages/NotFound";
 import DesignerPage from "./pages/DesignerPage";
 import WishlistPage from "./pages/WishlistPage";
+import TrackOrderPage from "./pages/TrackOrderPage";
+import ReturnPolicyPage from "./pages/ReturnPolicyPage";
+import ShippingPolicyPage from "./pages/ShippingPolicyPage";
+import FAQPage from "./pages/FAQPage";
+import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
 
 const queryClient = new QueryClient();
 
