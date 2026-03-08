@@ -46,6 +46,14 @@ interface ImageLayer {
   height: number;
 }
 
+const SIZES = ['S', 'M', 'L', 'XL', 'XXL'];
+const PRINT_POSITIONS = [
+  { id: 'front-center', label: 'Front Center', desc: 'Standard chest print' },
+  { id: 'front-left', label: 'Front Left', desc: 'Left chest pocket area' },
+  { id: 'back-center', label: 'Back Center', desc: 'Full back print' },
+  { id: 'back-top', label: 'Back Top', desc: 'Upper back below neck' },
+];
+
 const DesignerPage = () => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -61,6 +69,8 @@ const DesignerPage = () => {
   const [italic, setItalic] = useState(false);
   const [textAlign, setTextAlign] = useState<'left' | 'center' | 'right'>('center');
   const [dragging, setDragging] = useState<{ id: string; type: 'text' | 'image'; offsetX: number; offsetY: number } | null>(null);
+  const [selectedSize, setSelectedSize] = useState('M');
+  const [printPosition, setPrintPosition] = useState('front-center');
 
   const { addToCart } = useStore();
 
