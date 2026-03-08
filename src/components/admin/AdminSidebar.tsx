@@ -67,8 +67,17 @@ export function AdminSidebar() {
                     {!collapsed && <span>Back to Store</span>}
                   </NavLink>
                 </SidebarMenuButton>
+                </SidebarMenuItem>
+
+              <SidebarMenuItem>
+                <SidebarMenuButton
+                  onClick={async () => { await signOut(); navigate('/auth'); }}
+                  className="hover:bg-destructive/10 text-destructive cursor-pointer"
+                >
+                  <LogOut className="mr-2 h-4 w-4" />
+                  {!collapsed && <span>Logout</span>}
+                </SidebarMenuButton>
               </SidebarMenuItem>
-            </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
