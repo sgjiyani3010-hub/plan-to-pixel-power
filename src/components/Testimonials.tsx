@@ -42,16 +42,25 @@ const Testimonials = () => {
           {testimonials.map((t, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 40 }}
               whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: i * 0.15 }}
-              className="bg-card rounded-2xl p-6 border border-border relative"
+              viewport={{ once: true, margin: '-30px' }}
+              transition={{ delay: i * 0.15, duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+              whileHover={{ y: -5, boxShadow: '0 20px 40px -15px hsl(var(--primary) / 0.12)' }}
+              className="bg-card rounded-2xl p-6 border border-border relative transition-all duration-300"
             >
               <Quote className="w-8 h-8 text-accent/20 absolute top-4 right-4" />
               <div className="flex gap-1 mb-4">
                 {Array.from({ length: 5 }).map((_, j) => (
-                  <Star key={j} className={`w-4 h-4 ${j < t.rating ? 'fill-highlight text-highlight' : 'text-border'}`} />
+                  <motion.div
+                    key={j}
+                    initial={{ opacity: 0, scale: 0 }}
+                    whileInView={{ opacity: 1, scale: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ delay: i * 0.15 + j * 0.05 }}
+                  >
+                    <Star className={`w-4 h-4 ${j < t.rating ? 'fill-highlight text-highlight' : 'text-border'}`} />
+                  </motion.div>
                 ))}
               </div>
               <p className="font-body text-foreground/80 mb-6 leading-relaxed">"{t.text}"</p>

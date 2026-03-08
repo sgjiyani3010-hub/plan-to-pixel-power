@@ -42,14 +42,16 @@ const BestSellers = () => {
             <h2 className="font-heading text-3xl md:text-5xl font-bold text-foreground mb-3">Best Sellers</h2>
             <p className="text-muted-foreground font-body text-lg">Our most loved styles</p>
           </div>
-          <Link to="/shop" className="hidden md:inline-block font-accent text-sm font-semibold text-accent hover:underline">
-            View All →
-          </Link>
+          <motion.div whileHover={{ x: 5 }}>
+            <Link to="/shop" className="hidden md:inline-block font-accent text-sm font-semibold text-accent hover:underline">
+              View All →
+            </Link>
+          </motion.div>
         </motion.div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-          {products.map((product) => (
-            <ProductCard key={product.id} product={product} />
+          {products.map((product, i) => (
+            <ProductCard key={product.id} product={product} index={i} />
           ))}
         </div>
 
