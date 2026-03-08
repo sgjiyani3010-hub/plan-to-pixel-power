@@ -128,6 +128,10 @@ serve(async (req) => {
         .eq("user_id", order.user_id)
         .single();
 
+      // Fetch user email from auth
+      const { data: userData } = await supabase.auth.admin.getUserById(order.user_id);
+      const userEmail = userData?.user?.email || "customer@example.com";
+
       const addr = order.shipping_address as Record<string, string> || {};
       const { package_length, package_width, package_height, package_weight } = body;
 
@@ -144,7 +148,7 @@ serve(async (req) => {
         order_id: order_id.slice(0, 20),
         order_date: new Date(order.created_at).toISOString().split("T")[0],
         pickup_location: "Primary",
-        billing_customer_name: profile?.full_name || "Customer",
+        billing_customer_name: addr.fullName || profile?.full_name || "Customer",
         billing_last_name: "",
         billing_address: addr.address_line1 || addr.addressLine1 || "",
         billing_address_2: addr.address_line2 || addr.addressLine2 || "",
@@ -152,8 +156,8 @@ serve(async (req) => {
         billing_pincode: addr.pincode || "",
         billing_state: addr.state || "",
         billing_country: "India",
-        billing_email: "",
-        billing_phone: profile?.phone || "9999999999",
+        billing_email: userEmail,
+        billing_phone: addr.phone || profile?.phone || "9999999999",
         shipping_is_billing: true,
         order_items: orderItems,
         payment_method: "Prepaid",
