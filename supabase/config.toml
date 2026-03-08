@@ -9,5 +9,5 @@ verify_jwt = false
 [functions.whatsapp]
 verify_jwt = false
 
-[functions.shiprocket-webhook]
+[functions.shiprocket-poll]
 verify_jwt = false
