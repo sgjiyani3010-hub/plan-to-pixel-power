@@ -17,7 +17,7 @@ const ProductDetail = () => {
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [variations, setVariations] = useState<Record<string, string>>({});
+  const [variations, setVariations] = useState<Record<string, { image: string; name?: string }>>({});
   const { addToCart, toggleWishlist, wishlist } = useStore();
 
   useEffect(() => {
@@ -45,11 +45,11 @@ const ProductDetail = () => {
         // Fetch color variations
         const { data: vars } = await supabase
           .from('product_variations')
-          .select('color, image')
+          .select('color, image, name')
           .eq('product_id', data.id);
         if (vars) {
-          const varMap: Record<string, string> = {};
-          vars.forEach((v: any) => { varMap[v.color] = v.image; });
+          const varMap: Record<string, { image: string; name?: string }> = {};
+          vars.forEach((v: any) => { varMap[v.color] = { image: v.image, name: v.name }; });
           setVariations(varMap);
         }
         setQuantity(1);
@@ -130,8 +130,8 @@ const ProductDetail = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
-                src={variations[selectedColor] || product.image}
-                alt={product.name}
+                src={variations[selectedColor]?.image || product.image}
+                alt={variations[selectedColor]?.name || product.name}
                 className="w-full h-full object-cover"
               />
               {product.badge && (
@@ -149,7 +149,7 @@ const ProductDetail = () => {
                 <span className="font-body text-sm text-muted-foreground">(24 reviews)</span>
               </div>
 
-              <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">{product.name}</h1>
+              <h1 className="font-heading text-3xl md:text-4xl font-bold text-foreground mb-4">{variations[selectedColor]?.name || product.name}</h1>
 
               <div className="flex items-center gap-3 mb-6">
                 <span className="font-accent text-3xl font-bold text-foreground">₹{product.price}</span>

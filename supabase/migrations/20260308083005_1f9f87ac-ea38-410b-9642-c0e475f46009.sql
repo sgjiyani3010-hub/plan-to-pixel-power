@@ -1,0 +1,1 @@
+ALTER TABLE public.product_variations ADD COLUMN name text;
