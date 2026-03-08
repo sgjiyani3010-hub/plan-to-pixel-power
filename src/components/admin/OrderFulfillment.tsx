@@ -232,9 +232,41 @@ export function OrderFulfillment({ order, items, onStatusChange }: Props) {
     });
   };
 
-  const handleTrack = async () => {
-    const data = await callShiprocket('track');
-    if (data) setTracking(data);
+  const handleRefreshTracking = async () => {
+    if (!shipment) return;
+    setLoading('refresh-tracking');
+    try {
+      // 1. Trigger the poll for this specific shipment (updates DB + sends notifications)
+      await supabase.functions.invoke('shiprocket-poll', {
+        body: { shipment_id: shipment.id },
+      });
+
+      // 2. Re-fetch shipment from DB to get updated status
+      const { data: updatedShipment } = await supabase
+        .from('order_shipments')
+        .select('*')
+        .eq('id', shipment.id)
+        .single();
+
+      const oldStatus = shipment.status;
+      if (updatedShipment) setShipment(updatedShipment as Shipment);
+
+      // 3. Also fetch tracking timeline from Shiprocket
+      const trackData = await callShiprocket('track');
+      if (trackData) setTracking(trackData);
+
+      onStatusChange();
+
+      if (updatedShipment && updatedShipment.status !== oldStatus) {
+        toast({ title: 'Status updated', description: `Shipment status changed to ${updatedShipment.status.replace(/_/g, ' ')}` });
+      } else {
+        toast({ title: 'Tracking refreshed', description: 'No status change detected' });
+      }
+    } catch (err: any) {
+      toast({ title: 'Error', description: err.message, variant: 'destructive' });
+    } finally {
+      setLoading(null);
+    }
   };
 
   const handleCancel = () => callShiprocket('cancel');
