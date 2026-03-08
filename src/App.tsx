@@ -53,6 +53,11 @@ const App = () => (
             <Route path="/profile" element={<ProfilePage />} />
             <Route path="/designer" element={<DesignerPage />} />
             <Route path="/wishlist" element={<WishlistPage />} />
+            <Route path="/track-order" element={<TrackOrderPage />} />
+            <Route path="/return-policy" element={<ReturnPolicyPage />} />
+            <Route path="/shipping-policy" element={<ShippingPolicyPage />} />
+            <Route path="/faq" element={<FAQPage />} />
+            <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/admin/products" element={<AdminProducts />} />
             <Route path="/admin/orders" element={<AdminOrders />} />

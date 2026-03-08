@@ -62,9 +62,15 @@ const Footer = () => {
           <motion.div variants={itemVariants}>
             <h4 className="font-accent text-sm font-bold uppercase tracking-wider mb-4">Help</h4>
             <div className="flex flex-col gap-2.5">
-              {['Track Order', 'Returns & Exchange', 'Shipping Policy', 'FAQ', 'Privacy Policy'].map((l) => (
-                <Link key={l} to="/" className="font-body text-sm text-primary-foreground/60 hover:text-primary-foreground hover:translate-x-1 transition-all inline-block">
-                  {l}
+              {[
+                { label: 'Track Order', path: '/track-order' },
+                { label: 'Returns & Exchange', path: '/return-policy' },
+                { label: 'Shipping Policy', path: '/shipping-policy' },
+                { label: 'FAQ', path: '/faq' },
+                { label: 'Privacy Policy', path: '/privacy-policy' },
+              ].map((l) => (
+                <Link key={l.label} to={l.path} className="font-body text-sm text-primary-foreground/60 hover:text-primary-foreground hover:translate-x-1 transition-all inline-block">
+                  {l.label}
                 </Link>
               ))}
             </div>

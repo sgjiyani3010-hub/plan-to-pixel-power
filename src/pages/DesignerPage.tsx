@@ -429,6 +429,47 @@ const DesignerPage = () => {
                 />
               </div>
 
+              {/* Print Position Selector */}
+              <div className="w-full bg-card rounded-xl border border-border p-4">
+                <h4 className="font-accent text-xs font-semibold text-foreground mb-3">Print Position</h4>
+                <div className="grid grid-cols-2 gap-2">
+                  {PRINT_POSITIONS.map((pos) => (
+                    <button
+                      key={pos.id}
+                      onClick={() => setPrintPosition(pos.id)}
+                      className={`p-3 rounded-lg border-2 text-left transition-all ${
+                        printPosition === pos.id 
+                          ? 'border-accent bg-accent/10' 
+                          : 'border-border hover:border-muted-foreground/30'
+                      }`}
+                    >
+                      <span className="font-accent text-xs font-medium text-foreground block">{pos.label}</span>
+                      <span className="font-body text-[10px] text-muted-foreground">{pos.desc}</span>
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Size Selector */}
+              <div className="w-full bg-card rounded-xl border border-border p-4">
+                <h4 className="font-accent text-xs font-semibold text-foreground mb-3">Select Size</h4>
+                <div className="flex gap-2">
+                  {SIZES.map((size) => (
+                    <button
+                      key={size}
+                      onClick={() => setSelectedSize(size)}
+                      className={`flex-1 py-2.5 rounded-lg border-2 font-accent text-sm font-medium transition-all ${
+                        selectedSize === size 
+                          ? 'border-accent bg-accent text-accent-foreground' 
+                          : 'border-border text-foreground hover:border-muted-foreground/30'
+                      }`}
+                    >
+                      {size}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
               <div className="flex gap-3 w-full">
                 <Button variant="outline" onClick={handleReset} className="gap-2 font-accent text-sm flex-1">
                   <RotateCcw className="w-4 h-4" /> Reset
