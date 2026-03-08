@@ -272,22 +272,23 @@ const DesignerPage = () => {
   };
 
   const handleAddToCart = () => {
+    const positionLabel = PRINT_POSITIONS.find(p => p.id === printPosition)?.label || 'Front Center';
     addToCart({
       product: {
         id: `custom-${Date.now()}`,
-        name: 'Custom Designed T-Shirt',
+        name: `Custom T-Shirt (${positionLabel})`,
         price: 799,
         image: canvasRef.current?.toDataURL() || '/assets/product-1.jpg',
         category: 'custom',
         colors: [tshirtColor],
-        sizes: ['S', 'M', 'L', 'XL', 'XXL'],
-        description: 'Your custom designed t-shirt',
+        sizes: SIZES,
+        description: `Custom designed t-shirt with ${positionLabel.toLowerCase()} print`,
       },
       quantity: 1,
-      size: 'M',
+      size: selectedSize,
       color: tshirtColor,
     });
-    toast.success('Custom t-shirt added to cart!');
+    toast.success(`Custom t-shirt (Size ${selectedSize}) added to cart!`);
   };
 
   return (
