@@ -1,7 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ShoppingBag, Heart, Search, Menu, X, User, LogOut } from 'lucide-react';
+import { ShoppingBag, Heart, Search, Menu, X, User, LogOut, Shield } from 'lucide-react';
+import { useAdmin } from '@/hooks/useAdmin';
 import { useStore } from '@/lib/store';
 import { useAuth } from '@/contexts/AuthContext';
 
@@ -11,6 +12,7 @@ const Navbar = () => {
   const location = useLocation();
   const cartCount = useStore((s) => s.cartCount());
   const { user, signOut } = useAuth();
+  const { isAdmin } = useAdmin();
   const isHome = location.pathname === '/';
 
   useEffect(() => {
@@ -81,6 +83,13 @@ const Navbar = () => {
               <Link to="/auth">
                 <motion.div whileHover="hover" whileTap="tap" variants={iconVariants} className="hidden sm:block">
                   <User className="w-5 h-5 cursor-pointer" />
+                </motion.div>
+              </Link>
+            )}
+            {isAdmin && (
+              <Link to="/admin" title="Admin Panel">
+                <motion.div whileHover="hover" whileTap="tap" variants={iconVariants} className="hidden sm:block">
+                  <Shield className="w-5 h-5 cursor-pointer text-accent" />
                 </motion.div>
               </Link>
             )}
