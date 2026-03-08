@@ -130,8 +130,8 @@ const ProductDetail = () => {
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 transition={{ duration: 0.3 }}
-                src={variations[selectedColor] || product.image}
-                alt={product.name}
+                src={variations[selectedColor]?.image || product.image}
+                alt={variations[selectedColor]?.name || product.name}
                 className="w-full h-full object-cover"
               />
               {product.badge && (
