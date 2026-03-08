@@ -37,6 +37,9 @@ const ProductDetail = () => {
           description: data.description,
         };
         setProduct(p);
+        setSelectedColor(p.colors[0] || '');
+        setSelectedSize('');
+        setQuantity(1);
 
         // Fetch related
         const { data: rel } = await supabase
