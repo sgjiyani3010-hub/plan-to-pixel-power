@@ -186,6 +186,32 @@ serve(async (req) => {
         console.error("Order update error:", updateError);
       }
 
+      // Send WhatsApp notifications
+      try {
+        // Get customer profile for phone
+        const { data: orderData } = await supabase.from("orders").select("user_id, total").eq("id", order_id).single();
+        if (orderData) {
+          const { data: profile } = await supabase.from("profiles").select("phone, full_name").eq("user_id", orderData.user_id).single();
+          if (profile?.phone) {
+            const whatsappUrl = `${supabaseUrl}/functions/v1/whatsapp`;
+            // Notify customer
+            await fetch(whatsappUrl, {
+              method: "POST",
+              headers: { "Content-Type": "application/json", Authorization: `Bearer ${supabaseServiceKey}` },
+              body: JSON.stringify({
+                action: "send-both",
+                order_id,
+                customer_phone: profile.phone,
+                template_name: "order_confirmed",
+                parameters: [order_id.slice(0, 8), `₹${Number(orderData.total).toLocaleString()}`],
+              }),
+            });
+          }
+        }
+      } catch (whatsappErr) {
+        console.error("WhatsApp notification error:", whatsappErr);
+      }
+
       return new Response(
         JSON.stringify({ success: true, order_id }),
         { headers: { ...corsHeaders, "Content-Type": "application/json" } }
