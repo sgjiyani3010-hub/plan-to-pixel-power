@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      abandoned_carts: {
+        Row: {
+          cart_data: Json
+          created_at: string
+          email: string | null
+          id: string
+          recovered: boolean | null
+          recovery_email_sent: boolean | null
+          updated_at: string
+          user_id: string | null
+        }
+        Insert: {
+          cart_data: Json
+          created_at?: string
+          email?: string | null
+          id?: string
+          recovered?: boolean | null
+          recovery_email_sent?: boolean | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Update: {
+          cart_data?: Json
+          created_at?: string
+          email?: string | null
+          id?: string
+          recovered?: boolean | null
+          recovery_email_sent?: boolean | null
+          updated_at?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           content: string
@@ -121,6 +154,35 @@ export type Database = {
           used_count?: number | null
         }
         Relationships: []
+      }
+      guest_orders: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          order_id: string
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          order_id: string
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          order_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "guest_orders_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       notification_log: {
         Row: {
@@ -287,6 +349,7 @@ export type Database = {
           coupon_code: string | null
           created_at: string
           discount: number | null
+          guest_email: string | null
           id: string
           shipping_address: Json | null
           status: string
@@ -298,6 +361,7 @@ export type Database = {
           coupon_code?: string | null
           created_at?: string
           discount?: number | null
+          guest_email?: string | null
           id?: string
           shipping_address?: Json | null
           status?: string
@@ -309,6 +373,7 @@ export type Database = {
           coupon_code?: string | null
           created_at?: string
           discount?: number | null
+          guest_email?: string | null
           id?: string
           shipping_address?: Json | null
           status?: string
@@ -566,6 +631,75 @@ export type Database = {
         Update: {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
+          user_id?: string
+        }
+        Relationships: []
+      }
+      wallet_transactions: {
+        Row: {
+          amount: number
+          created_at: string
+          description: string | null
+          id: string
+          order_id: string | null
+          type: string
+          wallet_id: string
+        }
+        Insert: {
+          amount: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_id?: string | null
+          type: string
+          wallet_id: string
+        }
+        Update: {
+          amount?: number
+          created_at?: string
+          description?: string | null
+          id?: string
+          order_id?: string | null
+          type?: string
+          wallet_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wallet_transactions_order_id_fkey"
+            columns: ["order_id"]
+            isOneToOne: false
+            referencedRelation: "orders"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wallet_transactions_wallet_id_fkey"
+            columns: ["wallet_id"]
+            isOneToOne: false
+            referencedRelation: "wallets"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wallets: {
+        Row: {
+          balance: number
+          created_at: string
+          id: string
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          balance?: number
+          created_at?: string
+          id?: string
+          updated_at?: string
           user_id?: string
         }
         Relationships: []
