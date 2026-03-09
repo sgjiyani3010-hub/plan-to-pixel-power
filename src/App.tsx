@@ -30,6 +30,7 @@ import ReturnPolicyPage from "./pages/ReturnPolicyPage";
 import ShippingPolicyPage from "./pages/ShippingPolicyPage";
 import FAQPage from "./pages/FAQPage";
 import PrivacyPolicyPage from "./pages/PrivacyPolicyPage";
+import WalletPage from "./pages/WalletPage";
 
 const queryClient = new QueryClient();
 
