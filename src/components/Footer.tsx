@@ -50,9 +50,15 @@ const Footer = () => {
           <motion.div variants={itemVariants}>
             <h4 className="font-accent text-sm font-bold uppercase tracking-wider mb-4">Quick Links</h4>
             <div className="flex flex-col gap-2.5">
-              {['Shop All', 'New Arrivals', 'Best Sellers', 'Custom Design', 'Size Guide'].map((l) => (
-                <Link key={l} to="/shop" className="font-body text-sm text-primary-foreground/60 hover:text-primary-foreground hover:translate-x-1 transition-all inline-block">
-                  {l}
+              {[
+                { label: 'Shop All', path: '/shop' },
+                { label: 'Custom Design', path: '/designer' },
+                { label: 'Size Guide', path: '/size-guide' },
+                { label: 'My Wallet', path: '/wallet' },
+                { label: 'Terms & Conditions', path: '/terms' },
+              ].map((l) => (
+                <Link key={l.label} to={l.path} className="font-body text-sm text-primary-foreground/60 hover:text-primary-foreground hover:translate-x-1 transition-all inline-block">
+                  {l.label}
                 </Link>
               ))}
             </div>
